@@ -10,6 +10,7 @@ $(document).ready(function() {
 
     // Add user button click
     $('#btnAddUser').on('click', addUser);
+
 });
 
 // Fill in table with data
@@ -59,4 +60,56 @@ function showUserInfo(event) {
     $('#userInfoGender').text(thisUserObject.gender);
     $('#userInfoLocation').text(thisUserObject.location);
   
+  };
+
+  // Add User
+  function addUser(event) {
+
+      event.preventDefault();
+
+      // Some VERY basic validation
+      var errorCount = 0;
+      $('#addUser input').each(function(index, val) {
+          // Increment the error count if any field is empty
+          if ($(this).val() === '') {
+              errorCount++;
+          }
+      });
+
+      // If the error count is still at zero, we can proceed
+      if (errorCount === 0) {
+          // Compile all of the form data into one object
+          var newUser = {
+            'username': $('#addUser fieldset input#inputUserName').val(),
+            'email': $('#addUser fieldset input#inputUserEmail').val(),
+            'fullname': $('#addUser fieldset input#inputUserFullname').val(),
+            'age': $('#addUser fieldset input#inputUserAge').val(),
+            'location': $('#addUser fieldset input#inputUserLocation').val(),
+            'gender': $('#addUser fieldset input#inputUserGender').val()
+          }
+
+          // Post the object to the adduser service
+          $.ajax({
+              type: 'POST',
+              data: newUser,
+              url: '/users/adduser',
+              dataType: 'JSON'
+          }).done(function( response ) {
+            
+            // A blank response is a successful response
+            if (response.msg === '') {
+                // Tidy up and clear the form inputs
+                $('#addUser fieldset input').val('');
+                // Update the table
+                populateTable();
+            } else {
+                // Something has failed, output the received message
+                alert('Error: ' + response.msg);
+            }
+          });
+      } else {
+          // There is a positive errorCount, therefore validation failed
+          alert('Please fill in all fields');
+          return false;
+      }
   };
