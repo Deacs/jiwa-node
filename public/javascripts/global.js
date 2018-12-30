@@ -7,6 +7,9 @@ $(document).ready(function() {
 
     // Username link click
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
+
+    // Add user button click
+    $('#btnAddUser').on('click', addUser);
 });
 
 // Fill in table with data

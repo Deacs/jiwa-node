@@ -4,7 +4,7 @@ block content
   h1= title
   p All aboard the Jiwa!
 
-  // Wrapper
+  // WRAPPER
   #wrapper
 
     // USER INFO
@@ -34,5 +34,21 @@ block content
           th Delete?
         tbody
     // /USER LIST
+
+    // ADD USER
+    h2 Add User
+    #addUser  
+      #fieldset
+        input#inputUserName(type='text', placeholder='Username')
+        input#inputUserEmail(type='text', placeholder='Email')
+        br
+        input#inputUserFullName(type='text', placeholder='Full Name')
+        input#inputUserAge(type='text', placeholder='Age')
+        br
+        input#inputUserLocation(type='text', placeholder='Location')
+        input#inputUserGender(type='text', placeholder='Gender')
+        br
+        button#btnAddUser Add User
+    // /ADD USER
 
   // /WRAPPER
