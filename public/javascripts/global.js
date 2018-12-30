@@ -11,6 +11,9 @@ $(document).ready(function() {
     // Add user button click
     $('#btnAddUser').on('click', addUser);
 
+    // Delete user button click
+    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
+
 });
 
 // Fill in table with data
@@ -113,3 +116,34 @@ function showUserInfo(event) {
           return false;
       }
   };
+
+// Delete User
+function deleteUser(event) {
+
+    event.preventDefault();
+
+    // Pop up a confirmation message
+    var confirmation = confirm('Are you sure you wish to delete this user?');
+
+    // Continue if confirned
+    if (confirmation === true) {
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/users/deleteuser/' + $(this).attr('rel')
+        }).done(function( response ) {
+            // A blank response is a successful response
+            if (response.msg === '') {
+                // Nothing to do here - maybe some notification
+            } else {
+                alert('Error: ' + response.msg);
+            }
+
+            // Update the table - should only happen if action was successful?
+            populateTable();
+        });
+    } else {
+        // Confirm was rejected, nothing to do
+        return false;
+    }
+};
