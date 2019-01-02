@@ -134,7 +134,7 @@ function deleteUser(event) {
         }).done(function( response ) {
             // A blank response is a successful response
             if (response.msg === '') {
-                // Nothing to do here - maybe some notification
+                // Nothing to do here - maybe some notification to display?
             } else {
                 alert('Error: ' + response.msg);
             }
