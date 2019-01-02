@@ -22,6 +22,7 @@ router.post('/adduser', function(req, res) {
   });
 });
 
+// Delete user
 router.delete('/deleteuser/:id', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
