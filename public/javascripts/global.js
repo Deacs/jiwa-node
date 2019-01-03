@@ -101,6 +101,11 @@ function showUserInfo(event) {
             
             // A blank response is a successful response
             if (response.msg === '') {
+
+                swal("Good job!", response.fullname + " successfully added!", "success");
+
+                console.log(response);
+
                 // Tidy up and clear the form inputs
                 $('#addUser fieldset input').val('');
                 // Update the table
@@ -123,27 +128,44 @@ function deleteUser(event) {
     event.preventDefault();
 
     // Pop up a confirmation message
-    var confirmation = confirm('Are you sure you wish to delete this user?');
+    var confirmation = swal("Are you sure you want to do this?", {
+        buttons: ["Go Ahead", "Hell no!"],
+    });
 
-    // Continue if confirned
-    if (confirmation === true) {
+    // Sweetalert version
+    swal({
+        title: "Delete User?",
+        text: "Once deleted, you will not be able to recover this amazing individual!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
 
-        $.ajax({
-            type: 'DELETE',
-            url: '/users/deleteuser/' + $(this).attr('rel')
-        }).done(function( response ) {
-            // A blank response is a successful response
-            if (response.msg === '') {
-                // Nothing to do here - maybe some notification to display?
-            } else {
-                alert('Error: ' + response.msg);
-            }
+            $.ajax({
+                type: 'DELETE',
+                url: '/users/deleteuser/' + $(this).attr('rel')
+            }).done(function( response ) {
+                // A blank response is a successful response
+                if (response.msg === '') {
+                    // Display some notification
+                    swal("Poof! They have gone!", {
+                        icon: "success",
+                    });
 
-            // Update the table - should only happen if action was successful?
-            populateTable();
-        });
-    } else {
-        // Confirm was rejected, nothing to do
-        return false;
-    }
+                } else {
+                    swal("Error: " + response.msg, {
+                        icon: "error",
+                    });
+                }
+                // Update the table - should only happen if action was successful?
+                populateTable();
+            });
+
+        } else {
+            swal("Phew! That was close!");
+            return false;
+        }
+    });
 };
