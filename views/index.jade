@@ -23,6 +23,26 @@ block content
         |  <span id='userInfoLocation'></span>
     // /USER INFO
 
+    // USER UPDATE
+    #userUpdate
+      h2 Update User Info
+      fieldset
+        input#inputUpdateUserName(type='text', placeholder='Username')
+        input#inputUpdateUserEmail(type='text', placeholder='Email')
+        br
+        input#inputUpdateUserFullname(type='text', placeholder='Full Name')
+        input#inputUpdateUserAge(type='text', placeholder='Age')
+        br
+        input#inputUpdateUserLocation(type='text', placeholder='Location')
+        select(id="inputUpdateUserGender", name="inputUpdateUserGender")
+          option Male
+          option Female
+          option Rather not specify
+        br
+        input#inputUpdateUserId(type='hidden')
+        button#btnUpdateUser Update User
+    // /USER UPDATE
+
     // USER LIST
     h2 User List
     #userList
@@ -30,6 +50,7 @@ block content
         thead
           th UserName
           th Email
+          th Edit?
           th Delete?
         tbody
     // /USER LIST

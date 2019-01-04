@@ -8,8 +8,14 @@ $(document).ready(function() {
     // Username link click
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
 
+    // Edit user link click
+    $('#userList table tbody').on('click', 'td a.linkedituser', editUserInfo);
+
     // Add user button click
     $('#btnAddUser').on('click', addUser);
+
+    // Edit user button click
+    $('#btnUpdateUser').on('click', updateUser);
 
     // Delete user button click
     $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
@@ -33,7 +39,8 @@ function populateTable() {
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username+ '</a></td>';
             tableContent += '<td>' + this.email+ '</td>';
-            tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id+ '">Delete </a></td>';
+            tableContent += '<td><a href="#" class="linkedituser" rel="' + this._id+ '">Edit</a></td>';
+            tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id+ '">Delete</a></td>';
             tableContent += '<tr>';
         });
 
@@ -65,6 +72,41 @@ function showUserInfo(event) {
   
   };
 
+  // Edit user
+  function editUserInfo(event) {
+
+    console.log('Prepare to edit user!');
+    console.log('--------------------');
+
+    // Prevent Link from Firing
+    event.preventDefault();
+
+    // Retrieve username from link rel attribute
+    var thisUserId = $(this).attr('rel');
+
+    console.log('User ID:');
+    console.log(thisUserId);
+    console.log('--------------------');
+
+    // Pull from global object - temporary
+    // Make an ajax request to find the individual user
+
+    // Get Index of object based on id value
+    var arrayPosition = userListData.map(function(arrayItem) { return arrayItem._id; }).indexOf(thisUserId);
+  
+    // Get our User Object
+    var thisUserObject = userListData[arrayPosition];
+    console.log('User Object fron global object');
+    console.log(thisUserObject);
+    console.log('--------------------');
+  };
+
+
+  // Update user
+  function updateUser(event) {
+      console.log('Edit User!');
+  };
+
   // Add User
   function addUser(event) {
 
@@ -90,8 +132,6 @@ function showUserInfo(event) {
             'location': $('#addUser fieldset input#inputUserLocation').val(),
             'gender': $('#addUser fieldset select#inputUserGender').val()
           }
-
-          console.log(newUser);
 
           // Post the object to the adduser service
           $.ajax({
