@@ -102,9 +102,14 @@ function showUserInfo(event) {
             // A blank response is a successful response
             if (response.msg === '') {
 
-                swal("Good job!", response.fullname + " successfully added!", "success");
-
-                console.log(response);
+                swal({
+                    title: "Good job!", 
+                    text: response.fullname + " successfully added!", 
+                    icon: "success",
+                    timer: 3000,
+                    buttons: false,
+                    showConfirmButton: false
+                });
 
                 // Tidy up and clear the form inputs
                 $('#addUser fieldset input').val('');
@@ -117,7 +122,11 @@ function showUserInfo(event) {
           });
       } else {
           // There is a positive errorCount, therefore validation failed
-          alert('Please fill in all fields');
+            swal({
+                title: 'Oops!',
+                text: 'Please fill in all fields',
+                icon: 'error'
+            });
           return false;
       }
   };
@@ -128,11 +137,10 @@ function deleteUser(event) {
     event.preventDefault();
 
     // Pop up a confirmation message
-    var confirmation = swal("Are you sure you want to do this?", {
-        buttons: ["Go Ahead", "Hell no!"],
-    });
+    // var confirmation = swal("Are you sure you want to do this?", {
+    //     buttons: ["Go Ahead", "Hell no!"],
+    // });
 
-    // Sweetalert version
     swal({
         title: "Delete User?",
         text: "Once deleted, you will not be able to recover this amazing individual!",
@@ -149,18 +157,24 @@ function deleteUser(event) {
             }).done(function( response ) {
                 // A blank response is a successful response
                 if (response.msg === '') {
-                    // Display some notification
-                    swal("Poof! They have gone!", {
+                    swal({
+                        title: "Poof!",
+                        text: "They have gone!",
                         icon: "success",
+                        timer: 3000,
+                        buttons: false,
                     });
-
+                    // Update the table - should only happen if action was successful
+                    populateTable();
                 } else {
-                    swal("Error: " + response.msg, {
+                    swal({
+                        title: "Error",
+                        text: response.msg, 
                         icon: "error",
+                        timer: 3000,
+                        buttons: false,
                     });
                 }
-                // Update the table - should only happen if action was successful?
-                populateTable();
             });
 
         } else {
