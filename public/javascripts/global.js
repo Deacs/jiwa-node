@@ -88,34 +88,95 @@ function showUserInfo(event) {
         $('#inputUpdateUserAge').val(data.age);
         $('#inputUpdateUserGender').val(data.gender);
         $('#inputUpdateUserLocation').val(data.location);
+        $('#inputUpdateUserId').val(data._id);
     });
 
   };
 
   // Update user
   function updateUser(event) {
-      console.log('Edit User!');
+    // Validation
+    var errorCount = 0;
 
-      // Validation
+    // Once again, crazy simple validation
+    $('#updateUser input, #updateUser select').each(function(index, val) {
+        // Increment the error count if any field is empty
+        if ($(this).val() === '') {
+            errorCount++;
+        }
+    });
 
-      // Error handling
+    // Empty error count means we're good to go
+    if (errorCount === 0) {
+        // Object creation, we are not checking for changes, just rebuilding the object
+        var updatedUser = {
+            'username': $('#updateUser fieldset input#inputUpdateUserName').val(),
+            'email': $('#updateUser fieldset input#inputUpdateUserEmail').val(),
+            'fullname': $('#updateUser fieldset input#inputUpdateUserFullname').val(),
+            'age': $('#updateUser fieldset input#inputUpdateUserAge').val(),
+            'location': $('#updateUser fieldset input#inputUpdateUserLocation').val(),
+            'gender': $('#updateUser fieldset select#inputUpdateUserGender').val()
+        };
 
-      // Object creation
+        var updatedUserId = $('#updateUser fieldset input#inputUpdateUserId').val();
 
-      // Object save
+        // Put the object to the updateuser service
+        $.ajax({
+            type: 'PUT',
+            data: updatedUser,
+            url: '/users/update/' + updatedUserId,
+            dataType: 'JSON'
+        }).done(function( response ) {
+            if (response.msg === '') {
+                swal({
+                    title: "Good job!", 
+                    text: response.fullname + " successfully updated!", 
+                    icon: "success",
+                    timer: 3000,
+                    buttons: false
+                });
+                // Tidy up and clear the form inputs
+                $('#updateUser fieldset input').val('');
+                // Update the table
+                populateTable();
+            } else {
+                // Something has failed, output the received message
+                swal({
+                    title: "Error!", 
+                    text: response.msg, 
+                    icon: "error",
+                    timer: 5000,
+                    buttons: true
+                });
+                alert('Error: ' + response.msg);
+            }
+        }).fail(function() {
+            swal({
+                title: "Error!", 
+                text: response.fullname + " could not be edited!", 
+                icon: "error",
+                timer: 2000,
+                buttons: false
+            });
+        });
 
-      // Notification
-
+    } else {
+        swal({
+            title: 'Oops!',
+            text: 'You can\t leave any fields empty',
+            icon: 'error'
+        });
+      return false;
+    }
   };
 
   // Add User
   function addUser(event) {
 
       event.preventDefault();
-
       // Some VERY basic validation
       var errorCount = 0;
-      $('#addUser input').each(function(index, val) {
+      $('#addUser input, #addUser select').each(function(index, val) {
           // Increment the error count if any field is empty
           if ($(this).val() === '') {
               errorCount++;
@@ -179,13 +240,13 @@ function deleteUser(event) {
     event.preventDefault();
 
     swal({
-            title: "Delete User?",
-            text: "Once deleted, you will not be able to recover this amazing individual!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
+        title: "Delete User?",
+        text: "Once deleted, you will not be able to recover this amazing individual!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
         if (willDelete) {
 
             $.ajax({

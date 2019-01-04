@@ -5,15 +5,40 @@ var router = express.Router();
 router.get('/userlist', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
+  
   collection.find({}, {}, function(e, docs) {
     res.json(docs);
   });
+});
+
+// Delete user
+router.delete('/deleteuser/:id', function(req, res) {
+  var db = req.db;
+  var collection = db.get('userlist');
+  var userToDelete = req.params.id;
+
+  collection.remove({ '_id': userToDelete }, function(err) {
+    res.send((err === null) ? { msg: '' } : { msg: err });
+  });
+});
+
+// Retrieve user
+router.get('/:id', function(req, res) {
+  var db = req.db;
+  var collection = db.get('userlist');
+  var userToRetrieve = req.params.id;
+
+  collection.findOne({'_id': userToRetrieve})
+    .then((doc) => {
+      res.json(doc);
+    });
 });
 
 // Post to add user
 router.post('/adduser', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
+
   collection.insert(req.body, function(err, result) {
     // Add an error message back to the payload
     // It's presence is checked to determine a successful insert
@@ -24,30 +49,22 @@ router.post('/adduser', function(req, res) {
   });
 });
 
-// Delete user
-router.delete('/deleteuser/:id', function(req, res) {
+// Update user
+router.put('/update/:id', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
-  var userToDelete = req.params.id;
-  collection.remove({ '_id': userToDelete }, function(err) {
-    res.send((err === null) ? { msg: '' } : { msg: err });
-  });
-});
+  var userToUpdate = req.params.id;
 
-// Retrieve user
-router.get('/:id', function(req, res) {
-  console.log('Getting User');
-  var db = req.db;
-  var collection = db.get('userlist');
-  var userToRetrieve = req.params.id;
-
-  collection.findOne({'_id': userToRetrieve})
-    .then((doc) => {
-      console.log('***********************');
-      console.log(doc);
-      console.log('***********************');
-      res.json(doc);
-    });
+  collection.update({  '_id': userToUpdate }, { $set: req.body }, function (err, result) {
+    // Add an error message back to the payload
+    // It's presence is checked to determine a successful update
+    result.msg = (err == null) ? '' : err;
+    // Return the full name so qe can use it in the notification
+    result.fullname = req.body.fullname;
+    res.send(
+      result
+    );
+  })
 });
 
 module.exports = router; 

@@ -24,7 +24,7 @@ block content
     // /USER INFO
 
     // USER UPDATE
-    #userUpdate
+    #updateUser
       h2 Update User Info
       fieldset
         input#inputUpdateUserName(type='text', placeholder='Username')
@@ -67,6 +67,7 @@ block content
         br
         input#inputUserLocation(type='text', placeholder='Location')
         select(id="inputUserGender", name="inputUserGender")
+          option(value='') Please select a gender
           option Male
           option Female
           option Rather not specify
