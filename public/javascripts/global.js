@@ -74,37 +74,38 @@ function showUserInfo(event) {
 
   // Edit user
   function editUserInfo(event) {
-
-    console.log('Prepare to edit user!');
-    console.log('--------------------');
-
-    // Prevent Link from Firing
+    
     event.preventDefault();
 
-    // Retrieve username from link rel attribute
+    // Retrieve user ID from link rel attribute
     var thisUserId = $(this).attr('rel');
 
-    console.log('User ID:');
-    console.log(thisUserId);
-    console.log('--------------------');
+     $.getJSON('/users/' + thisUserId, function( data ) {
+        // Populate the edit form
+        $('#inputUpdateUserName').val(data.username);
+        $('#inputUpdateUserFullname').val(data.fullname);
+        $('#inputUpdateUserEmail').val(data.email);
+        $('#inputUpdateUserAge').val(data.age);
+        $('#inputUpdateUserGender').val(data.gender);
+        $('#inputUpdateUserLocation').val(data.location);
+    });
 
-    // Pull from global object - temporary
-    // Make an ajax request to find the individual user
-
-    // Get Index of object based on id value
-    var arrayPosition = userListData.map(function(arrayItem) { return arrayItem._id; }).indexOf(thisUserId);
-  
-    // Get our User Object
-    var thisUserObject = userListData[arrayPosition];
-    console.log('User Object fron global object');
-    console.log(thisUserObject);
-    console.log('--------------------');
   };
-
 
   // Update user
   function updateUser(event) {
       console.log('Edit User!');
+
+      // Validation
+
+      // Error handling
+
+      // Object creation
+
+      // Object save
+
+      // Notification
+
   };
 
   // Add User
@@ -178,11 +179,11 @@ function deleteUser(event) {
     event.preventDefault();
 
     swal({
-        title: "Delete User?",
-        text: "Once deleted, you will not be able to recover this amazing individual!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
+            title: "Delete User?",
+            text: "Once deleted, you will not be able to recover this amazing individual!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
         .then((willDelete) => {
         if (willDelete) {
