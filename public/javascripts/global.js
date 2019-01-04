@@ -88,8 +88,10 @@ function showUserInfo(event) {
             'fullname': $('#addUser fieldset input#inputUserFullname').val(),
             'age': $('#addUser fieldset input#inputUserAge').val(),
             'location': $('#addUser fieldset input#inputUserLocation').val(),
-            'gender': $('#addUser fieldset input#inputUserGender').val()
+            'gender': $('#addUser fieldset select#inputUserGender').val()
           }
+
+          console.log(newUser);
 
           // Post the object to the adduser service
           $.ajax({
@@ -107,8 +109,7 @@ function showUserInfo(event) {
                     text: response.fullname + " successfully added!", 
                     icon: "success",
                     timer: 3000,
-                    buttons: false,
-                    showConfirmButton: false
+                    buttons: false
                 });
 
                 // Tidy up and clear the form inputs
@@ -135,11 +136,6 @@ function showUserInfo(event) {
 function deleteUser(event) {
 
     event.preventDefault();
-
-    // Pop up a confirmation message
-    // var confirmation = swal("Are you sure you want to do this?", {
-    //     buttons: ["Go Ahead", "Hell no!"],
-    // });
 
     swal({
         title: "Delete User?",
