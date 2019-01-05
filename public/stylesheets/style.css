@@ -73,7 +73,8 @@ fieldset {
 }
 
 #btnAddUser,
-#btnUpdateUser {
+#btnUpdateUser,
+#btnEditCurrentUser {
 	border: 1px solid greenyellow;
 	background-color: greenyellow;
 	padding: 10px;
@@ -81,7 +82,12 @@ fieldset {
 }
 
 #btnAddUser:hover,
-#btnUpdateUser:hover {
+#btnUpdateUser:hover,
+#btnEditCurrentUser:hover {
 	border-color: greenyellow;
 	background-color: whitesmoke;
+}
+
+#btnEditCurrentUser {
+	display:none;
 }

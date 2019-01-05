@@ -11,6 +11,9 @@ $(document).ready(function() {
     // Edit user link click
     $('#userList table tbody').on('click', 'td a.linkedituser', editUserInfo);
 
+    // Edit current user link (shown within the user details box)
+    $('#btnEditCurrentUser').on('click', editUserInfo);
+
     // Add user button click
     $('#btnAddUser').on('click', addUser);
 
@@ -54,6 +57,9 @@ function showUserInfo(event) {
 
     // Prevent Link from Firing
     event.preventDefault();
+
+    // Activate the edit button
+    $('#btnEditCurrentUser').show();
   
     // Retrieve username from link rel attribute
     var thisUserName = $(this).attr('rel');
@@ -69,6 +75,7 @@ function showUserInfo(event) {
     $('#userInfoAge').text(thisUserObject.age);
     $('#userInfoGender').text(thisUserObject.gender);
     $('#userInfoLocation').text(thisUserObject.location);
+    $('#btnEditCurrentUser').attr('rel', thisUserObject._id);
   
   };
 
@@ -80,7 +87,14 @@ function showUserInfo(event) {
     // Retrieve user ID from link rel attribute
     var thisUserId = $(this).attr('rel');
 
-     $.getJSON('/users/' + thisUserId, function( data ) {
+    populateEditForm(thisUserId);
+
+  };
+
+  // Populate the edit form
+  function populateEditForm(userId) {
+    
+    $.getJSON('/users/' +userId, function( data ) {
         // Populate the edit form
         $('#inputUpdateUserName').val(data.username);
         $('#inputUpdateUserFullname').val(data.fullname);
@@ -90,7 +104,6 @@ function showUserInfo(event) {
         $('#inputUpdateUserLocation').val(data.location);
         $('#inputUpdateUserId').val(data._id);
     });
-
   };
 
   // Update user
