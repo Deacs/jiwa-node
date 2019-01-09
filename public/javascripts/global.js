@@ -40,7 +40,7 @@ function populateTable() {
         // Add a new row for each JSON item
         $.each(data, function() {
             tableContent += '<tr>';
-            tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username+ '</a></td>';
+            tableContent += '<td><a href="#" class="linkshowuser" rel="' + this._id + '">' + this.username+ '</a></td>';
             tableContent += '<td>' + this.email+ '</td>';
             tableContent += '<td><a href="#" class="linkedituser" rel="' + this._id+ '">Edit</a></td>';
             tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id+ '">Delete</a></td>';
@@ -54,60 +54,64 @@ function populateTable() {
 
 // Show User Info
 function showUserInfo(event) {
-
-    // Prevent Link from Firing
     event.preventDefault();
-
-    // Activate the edit button
     $('#btnEditCurrentUser').show();
-  
-    // Retrieve username from link rel attribute
-    var thisUserName = $(this).attr('rel');
-  
-    // Get Index of object based on id value
-    var arrayPosition = userListData.map(function(arrayItem) { return arrayItem.username; }).indexOf(thisUserName);
-  
-    // Get our User Object
-    var thisUserObject = userListData[arrayPosition];
-  
-    //Populate Info Box
-    $('#userInfoName').text(thisUserObject.fullname);
-    $('#userInfoAge').text(thisUserObject.age);
-    $('#userInfoGender').text(thisUserObject.gender);
-    $('#userInfoLocation').text(thisUserObject.location);
-    $('#btnEditCurrentUser').attr('rel', thisUserObject._id);
-  
-  };
-
-  // Edit user
-  function editUserInfo(event) {
-    
-    event.preventDefault();
-
-    // Retrieve user ID from link rel attribute
     var thisUserId = $(this).attr('rel');
 
-    populateEditForm(thisUserId);
+    // Populate the info box
+    handleUserData(thisUserId, populateInfoBox);
+};
 
-  };
-
-  // Populate the edit form
-  function populateEditForm(userId) {
-    
-    $.getJSON('/users/' +userId, function( data ) {
-        // Populate the edit form
-        $('#inputUpdateUserName').val(data.username);
-        $('#inputUpdateUserFullname').val(data.fullname);
-        $('#inputUpdateUserEmail').val(data.email);
-        $('#inputUpdateUserAge').val(data.age);
-        $('#inputUpdateUserGender').val(data.gender);
-        $('#inputUpdateUserLocation').val(data.location);
-        $('#inputUpdateUserId').val(data._id);
+// Take a user ID, retrieve their data and pass it to the success handler
+function handleUserData(id, resultHandler) {
+    $.ajax({
+        type: 'GET',
+        url: '/users/' + id,
+        dataType: 'JSON',
+        success: function(response) {
+            return resultHandler(response);
+        },
+        error: function() {
+            swal({
+                title: 'Oops!',
+                text: 'That user cannot be found',
+                icon: 'error'
+            });
+        }
     });
-  };
+};
 
-  // Update user
-  function updateUser(event) {
+// Edit user
+function editUserInfo(event) {
+    event.preventDefault();
+    var thisUserId = $(this).attr('rel');
+
+    handleUserData(thisUserId, populateEditForm);
+};
+
+// Populate the edit form with the current user's data
+function populateEditForm(userObject) {
+    $('#inputUpdateUserName').val(userObject.username);
+    $('#inputUpdateUserFullname').val(userObject.fullname);
+    $('#inputUpdateUserEmail').val(userObject.email);
+    $('#inputUpdateUserAge').val(userObject.age);
+    $('#inputUpdateUserGender').val(userObject.gender);
+    $('#inputUpdateUserLocation').val(userObject.location);
+    $('#inputUpdateUserId').val(userObject._id);
+};
+
+// Populate the info box with the current user's data
+function populateInfoBox(userObject) {
+    $('#userInfoName').text(userObject.fullname);
+    $('#userInfoAge').text(userObject.age);
+    $('#userInfoGender').text(userObject.gender);
+    $('#userInfoLocation').text(userObject.location);
+    $('#btnEditCurrentUser').attr('rel', userObject._id);
+};
+
+// Update user
+function updateUser(event) {
+    event.preventDefault();
     // Validation
     var errorCount = 0;
 
@@ -179,43 +183,43 @@ function showUserInfo(event) {
             text: 'You can\t leave any fields empty',
             icon: 'error'
         });
-      return false;
+        return false;
     }
-  };
+};
 
-  // Add User
-  function addUser(event) {
+// Add User
+function addUser(event) {
 
-      event.preventDefault();
-      // Some VERY basic validation
-      var errorCount = 0;
-      $('#addUser input, #addUser select').each(function(index, val) {
-          // Increment the error count if any field is empty
-          if ($(this).val() === '') {
-              errorCount++;
-          }
-      });
+    event.preventDefault();
+    // Some VERY basic validation
+    var errorCount = 0;
+    $('#addUser input, #addUser select').each(function(index, val) {
+        // Increment the error count if any field is empty
+        if ($(this).val() === '') {
+            errorCount++;
+        }
+    });
 
-      // If the error count is still at zero, we can proceed
-      if (errorCount === 0) {
-          // Compile all of the form data into one object
-          var newUser = {
+    // If the error count is still at zero, we can proceed
+    if (errorCount === 0) {
+        // Compile all of the form data into one object
+        var newUser = {
             'username': $('#addUser fieldset input#inputUserName').val(),
             'email': $('#addUser fieldset input#inputUserEmail').val(),
             'fullname': $('#addUser fieldset input#inputUserFullname').val(),
             'age': $('#addUser fieldset input#inputUserAge').val(),
             'location': $('#addUser fieldset input#inputUserLocation').val(),
             'gender': $('#addUser fieldset select#inputUserGender').val()
-          }
+        }
 
-          // Post the object to the adduser service
-          $.ajax({
-              type: 'POST',
-              data: newUser,
-              url: '/users/adduser',
-              dataType: 'JSON'
-          }).done(function( response ) {
-            
+        // Post the object to the adduser service
+        $.ajax({
+            type: 'POST',
+            data: newUser,
+            url: '/users/adduser',
+            dataType: 'JSON'
+        }).done(function( response ) {
+        
             // A blank response is a successful response
             if (response.msg === '') {
 
@@ -235,17 +239,17 @@ function showUserInfo(event) {
                 // Something has failed, output the received message
                 alert('Error: ' + response.msg);
             }
-          });
-      } else {
-          // There is a positive errorCount, therefore validation failed
-            swal({
-                title: 'Oops!',
-                text: 'Please fill in all fields',
-                icon: 'error'
-            });
-          return false;
-      }
-  };
+        });
+    } else {
+        // There is a positive errorCount, therefore validation failed
+        swal({
+            title: 'Oops!',
+            text: 'Please fill in all fields',
+            icon: 'error'
+        });
+        return false;
+    }
+};
 
 // Delete User
 function deleteUser(event) {
