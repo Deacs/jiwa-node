@@ -27,7 +27,6 @@ $(document).ready(function() {
 
 // Fill in table with data
 function populateTable() {
-
     // Empty content string
     var tableContent = '';
 
@@ -74,7 +73,7 @@ function handleUserData(id, resultHandler) {
         error: function() {
             swal({
                 title: 'Oops!',
-                text: 'That user cannot be found',
+                text: 'That use cannot be found',
                 icon: 'error'
             });
         }
@@ -147,15 +146,20 @@ function updateUser(event) {
             if (response.msg === '') {
                 swal({
                     title: "Good job!", 
-                    text: response.fullname + " successfully updated!", 
+                    text: response.body.fullname + " successfully updated!", 
                     icon: "success",
                     timer: 3000,
                     buttons: false
                 });
-                // Tidy up and clear the form inputs
+                // Tidy up and clear the form inputslinkshowuser
                 $('#updateUser fieldset input').val('');
                 // Update the table
                 populateTable();
+                // If the info box is displaying the details of the user that we are updating, refresh those details
+                if (response._id === $('#btnEditCurrentUser').attr('rel')) {
+                    // This is crazy as a second API request is being made to get the data
+                    handleUserData(response._id, populateInfoBox);
+                }
             } else {
                 // Something has failed, output the received message
                 swal({
@@ -176,7 +180,6 @@ function updateUser(event) {
                 buttons: false
             });
         });
-
     } else {
         swal({
             title: 'Oops!',
@@ -189,7 +192,6 @@ function updateUser(event) {
 
 // Add User
 function addUser(event) {
-
     event.preventDefault();
     // Some VERY basic validation
     var errorCount = 0;
@@ -219,7 +221,6 @@ function addUser(event) {
             url: '/users/adduser',
             dataType: 'JSON'
         }).done(function( response ) {
-        
             // A blank response is a successful response
             if (response.msg === '') {
 
@@ -253,7 +254,6 @@ function addUser(event) {
 
 // Delete User
 function deleteUser(event) {
-
     event.preventDefault();
 
     swal({
@@ -273,13 +273,13 @@ function deleteUser(event) {
                 // A blank response is a successful response
                 if (response.msg === '') {
                     swal({
-                        title: "Poof!",
+                        title: "Piff Paff Poff!",
                         text: "They have gone!",
                         icon: "success",
                         timer: 3000,
                         buttons: false,
                     });
-                    // Update the table - should only happen if action was successful
+
                     populateTable();
                 } else {
                     swal({

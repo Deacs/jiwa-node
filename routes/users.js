@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/userlist', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
-  
+
   collection.find({}, {}, function(e, docs) {
     res.json(docs);
   });
@@ -59,8 +59,10 @@ router.put('/update/:id', function(req, res) {
     // Add an error message back to the payload
     // It's presence is checked to determine a successful update
     result.msg = (err == null) ? '' : err;
-    // Return the full name so qe can use it in the notification
-    result.fullname = req.body.fullname;
+    // Return the entire user object so it can be used by the caller
+    result.body = req.body;
+    // Return the ID so we can use it if we need it
+    result._id = userToUpdate;
     res.send(
       result
     );
